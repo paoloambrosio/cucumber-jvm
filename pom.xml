@@ -89,6 +89,9 @@
         <felix.version>5.6.6</felix.version>
         <tag-expressions.version>1.1.1</tag-expressions.version>
         <typetools.version>0.5.0</typetools.version>
+        <scala.version>2.12.5</scala.version>
+        <scala.compat.version>2.12</scala.compat.version>
+        <scalatest.version>3.0.5</scalatest.version>
     </properties>
     <licenses>
         <license>
@@ -529,6 +532,27 @@
                 <artifactId>typetools</artifactId>
                 <version>${typetools.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-library</artifactId>
+                <version>${scala.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-reflect</artifactId>
+                <version>${scala.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-compiler</artifactId>
+                <version>${scala.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.scalatest</groupId>
+                <artifactId>scalatest_${scala.compat.version}</artifactId>
+                <version>${scalatest.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -569,6 +593,8 @@
         <module>openejb</module>
         <module>needle</module>
         <module>android</module>
+        <module>scalatest</module>
+
         <module>examples</module>
         <!--This should always be the last module -->
         <module>continuous-deployment</module>
@@ -900,6 +926,25 @@
                         </analysisConfiguration>
                     </configuration>
                 </plugin>
+
+                <plugin>
+                    <groupId>org.scalatest</groupId>
+                    <artifactId>scalatest-maven-plugin</artifactId>
+                    <version>2.0.0</version>
+                    <configuration>
+                        <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+                        <junitxml>.</junitxml>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>test</id>
+                            <goals>
+                                <goal>test</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
                 <plugin>
                     <groupId>org.sonatype.plugins</groupId>
                     <artifactId>nexus-staging-maven-plugin</artifactId>
@@ -978,6 +1023,29 @@
                     <!--Manually review the non-snapshot artifacts for a while before automating the release -->
                     <autoReleaseAfterClose>false</autoReleaseAfterClose>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>3.3.2</version>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
 
