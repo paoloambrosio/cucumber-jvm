@@ -1,6 +1,5 @@
 package org.scalatest
 
-abstract class CucumberSuite extends CucumberSuiteLike {
+abstract class CucumberSuite  extends Suite { thisSuite =>
 
-  override def toString: String = Suite.suiteToString(None, this)
 }
